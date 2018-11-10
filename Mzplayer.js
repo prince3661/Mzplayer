@@ -19,6 +19,14 @@ const settingsvg='<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox=
 //网上的Jquery拓展用于解决屏幕大小改变问题的判断问题
 (function($,h,c){var a=$([]),e=$.resize=$.extend($.resize,{}),i,k="setTimeout",j="resize",d=j+"-special-event",b="delay",f="throttleWindow";e[b]=250;e[f]=true;$.event.special[j]={setup:function(){if(!e[f]&&this[k]){return false}var l=$(this);a=a.add(l);$.data(this,d,{w:l.width(),h:l.height()});if(a.length===1){g()}},teardown:function(){if(!e[f]&&this[k]){return false}var l=$(this);a=a.not(l);l.removeData(d);if(!a.length){clearTimeout(i)}},add:function(l){if(!e[f]&&this[k]){return false}var n;function m(s,o,p){var q=$(this),r=$.data(this,d);r.w=o!==c?o:q.width();r.h=p!==c?p:q.height();n.apply(this,arguments)}if($.isFunction(l)){n=l;return m}else{n=l.handler;l.handler=m}}};function g(){i=h[k](function(){a.each(function(){var n=$(this),m=n.width(),l=n.height(),o=$.data(this,d);if(m!==o.w||l!==o.h){n.trigger(j,[o.w=m,o.h=l])}});g()},e[b])}})(jQuery,this);
 
+
+var ua = navigator.userAgent;
+var ipad = ua.match(/(iPad).*OS\s([\d_]+)/);
+var Ios =ipad || ua.match(/(iPhone\sOS)\s([\d_]+)/);
+var Android = ua.match(/(Android)\s+([\d.]+)/);
+const isMobile = Ios || Android;
+
+
 //function
 
 //播放器生成
@@ -182,7 +190,11 @@ function makeReady(){
 	//$(".player")[i].volume=1;	
 	if(dansrc=='')
 		$(".comment").css('display','none');
-	
+	if(isMobile){
+		$('.player-volume').css('display','none');
+		$('#vol').css('display','none');
+		$('.player-time').css('left','50px');
+	}
 	getArr();
 	allStop();
 	$(".player")[0].style.display='block';
@@ -413,6 +425,7 @@ $('.mzplayer').click(function(){
 	
 //空格暂停
 $(document).keydown(function(e){
+	mm();
 	if(e.keyCode==32){
 		ptp();
 	}
@@ -550,12 +563,14 @@ $(".mzplayer").resize(function(){
 $('.player-icon').click(function(){
 	ptp();
 });
+if(!isMobile){
 $('.video-wrap').click(function(){
 	ptp();
 });
 $('.control-mask').click(function(){
 	ptp();
 });
+}
 
 //播放暂停事件函数
 function ptp(){
