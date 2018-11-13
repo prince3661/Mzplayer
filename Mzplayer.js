@@ -569,7 +569,7 @@ document.addEventListener("msfullscreenchange", function(e) {
 $(".mzplayer").resize(function(){ 
 
 });
-
+var dcTime=(new Date()).getTime();
 //暂停or播放点击事件绑定
 $('.player-icon').click(function(){
 	ptp();
@@ -580,6 +580,20 @@ $('.video-wrap').click(function(){
 });
 $('.control-mask').click(function(){
 	ptp();
+});
+}
+if(isMobile){
+$('.video-wrap').click(function(){
+	var t=(new Date()).getTime();
+	if(t-dcTime<=500)
+	ptp();
+	dcTime=t;
+});//设计算法实现移动端的双击暂停效果
+$('.control-mask').click(function(){
+	var t=(new Date()).getTime();
+	if(t-dcTime<=500)
+	ptp();
+	dcTime=t;
 });
 }
 
