@@ -22,6 +22,7 @@ const settingsvg='<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox=
 
 var ua = navigator.userAgent;
 var ipad = ua.match(/(iPad).*OS\s([\d_]+)/);
+
 var Ios =ipad || ua.match(/(iPhone\sOS)\s([\d_]+)/);
 var Android = ua.match(/(Android)\s+([\d.]+)/);
 const isMobile = Ios || Android;
@@ -105,8 +106,8 @@ $(".full").append("<div class='fullweb'></div>");
 $(".fullweb").append(fullwebsvg);
 $(".control").append("<div class='text1'></div>");
 $(".text1").html("网页全屏");
-$(".control").append("<div class='text3'></div>");
-$(".text3").html("播放");
+//$(".control").append("<div class='text3'></div>");
+//$(".text3").html("播放");
 $(".control").append("<div class='text4'></div>");
 $(".text4").html("音量");
 $(".control").append("<div class='text5'></div>");
@@ -144,13 +145,15 @@ function FullScreen() {
 		$(".mzplayer").removeClass('wf');
 		$(".text1").html("网页全屏");
 	}
-    var ele = $(".mzplayer")[0];
-    if (ele .requestFullscreen) {
-        ele .requestFullscreen();
-    } else if (ele .mozRequestFullScreen) {
-        ele .mozRequestFullScreen();
-    } else if (ele .webkitRequestFullScreen) {
-        ele .webkitRequestFullScreen();
+    var elem = $(".mzplayer")[0];
+    if (elem.webkitRequestFullScreen) {
+        elem.webkitRequestFullScreen();
+    } else if (elem.mozRequestFullScreen) {
+        elem.mozRequestFullScreen();
+    } else if (elem.requestFullScreen) {
+        elem.requestFullscreen();
+    } else {
+        notice.notice_show("浏览器不支持全屏API或已被禁用", null, null, null, true, true);
     }
 }
 
@@ -158,13 +161,17 @@ function FullScreen() {
 function exitFullscreen() {
 	$(".mzplayer").removeClass('ff');
 	$(".text2").html("全屏");
-    var de = document;
-    if (de.exitFullscreen) {
-        de.exitFullscreen();
-    } else if (de.mozCancelFullScreen) {
-        de.mozCancelFullScreen();
-    } else if (de.webkitCancelFullScreen) {
-        de.webkitCancelFullScreen();
+     var elem = document;
+    if (elem.webkitCancelFullScreen) {
+        elem.webkitCancelFullScreen();
+    } else if (elem.mozCancelFullScreen) {
+        elem.mozCancelFullScreen();
+    } else if (elem.cancelFullScreen) {
+        elem.cancelFullScreen();
+    } else if (elem.exitFullscreen) {
+        elem.exitFullscreen();
+    } else {
+        notice.notice_show("浏览器不支持全屏API或已被禁用", null, null, null, true, true);
     }
 }
 
@@ -194,7 +201,10 @@ function makeReady(){
 		$('.player-volume').css('display','none');
 		$('#vol').css('display','none');
 		$('.player-time').css('left','50px');
+		
+		$('.control').addClass('mcontrol');
 	}
+	$(".player-time").html('00:00&nbsp;/&nbsp;00:00');
 	getArr();
 	allStop();
 	$(".player")[0].style.display='block';
@@ -203,6 +213,7 @@ function makeReady(){
 		$(".player")[0].volume=store.get('vol');
 
 	whenPlay();
+	
 } 	//准备
 
 function getArr(){
@@ -247,10 +258,10 @@ function allStop(){
 }
 }
 //播放时刷新函数 分段视频专用
-try {
 function whenPlay(){
-	if(solo==1)
+	if(solo==1){
 		var timeText2=$(".player")[0].duration;
+	}
 	else
 		var timeText2=vTime[list.length-1];
 	var id=getWhich();
@@ -265,9 +276,10 @@ function whenPlay(){
 		var timeText1=$(".player")[0].currentTime;
 	else
 		var timeText1=$(".player")[0].currentTime+vTime[getWhich(id)-1];
-	if(solo==1){
+	if(solo==1&&$('.player')[0].buffered.length){
 		$('.controller3').css('width',($('.player')[0].buffered.end($('.player')[0].buffered.length-1))/($(".player")[0].duration)*parseFloat($('#t').css('width')));
 	}
+
 	//获取currentTime
 	var t11=parseInt(timeText1/60);
 	if(t11<10)
@@ -281,6 +293,7 @@ function whenPlay(){
 	var t22=parseInt(timeText2%60);
 	if(t22<10)
 	t22='0'+t22;
+	
 	$('.time2').css('width',(timeText1/timeText2)*parseFloat($('#t').css('width')));
 	$(".player-time").html('&nbsp;'+t11+':'+t12+'&nbsp;/&nbsp;'+t21+':'+t22);
 	if(solo==1){
@@ -330,8 +343,6 @@ function whenPlay(){
 }
 	if($(".player")[0].paused==false)
 	var t=setTimeout("whenPlay()",200);
-}}catch (e) {
-            setTimeout("whenPlay()",200);
 }//播放时的获取实时信息函数
 
 
@@ -339,7 +350,7 @@ function whenPlay(){
 
 //简单的初始化
 function eventF(){
-	
+
 //标记变量鼠标状态
 var mouseplayer=0;
 var mouseplayer1=0;
@@ -576,20 +587,21 @@ $('.control-mask').click(function(){
 function ptp(){
 	if ($(".player")[0].paused==true) {
 		$(".player")[0].play();
-		$(".text3").html("暂停");
+		//$(".text3").html("暂停");
 		$('.player-icon').removeClass('pause');
 		$('.player-icon').html(pausesvg);
 		$('.mid').html(playsvg);
+		whenPlay();
 	}else{
 		$('.player-icon').addClass('pause');
-		$(".text3").html("播放");
+		//$(".text3").html("播放");
 		$(".player")[0].pause();
 		$('.player-icon').html(playsvg);
 		$('.mid').html(pausesvg);
 	}
 	$(".mid").addClass('mid-transition');
 	setTimeout('$(".mid").removeClass("mid-transition");',500);
-	whenPlay();
+	
 }
 
 //页面全屏
@@ -607,16 +619,16 @@ $('.fullweb').click(function(e){
 	}
 });
 
-$(".player-icon").mouseover(function (){  
-	$('.text3').css('display','block');
-    $('.text3').css('opacity',1);
-	$('.text3').css('z-index',11);
-	$('.text3').css('transform','translateY(-2px)');
-}).mouseout(function (){  
-	$('.text3').css('opacity',0); 
-	$('.text3').css('z-index',0);
-	$('.text3').css('transform','translateY(5px)');
-});
+//$(".player-icon").mouseover(function (){  
+//	$('.text3').css('display','block');
+//   $('.text3').css('opacity',1);
+//	$('.text3').css('z-index',11);
+//	$('.text3').css('transform','translateY(-2px)');
+//}).mouseout(function (){  
+//	$('.text3').css('opacity',0); 
+//	$('.text3').css('z-index',0);
+//	$('.text3').css('transform','translateY(5px)');
+//});
 $(".fullweb").mouseover(function (e){ 
 	$('.text1').css('display','block'); 
     $('.text1').css('opacity',1); 
@@ -829,7 +841,7 @@ $(document).mousemove(function(e){
 		$('.time2').css('width',parseFloat($('#t').css('width')));
 		$(".player")[0].currentTime=$(".player")[0].duration;
 		$(".player")[0].pause();
-		$(".text3").html("播放");
+		//$(".text3").html("播放");
 		$('.player-icon').html(playsvg);
 		$('.mid').html(playsvg);
 	}
@@ -880,6 +892,77 @@ $('#t').click(function(e){
 });
 $('#t').mousedown(function(e){
 	mouseplayer1=1;
+});
+$('#t').bind('touchstart',function(e){
+	startX = e.originalEvent.changedTouches[0].pageX,
+    startY = e.originalEvent.changedTouches[0].pageY;
+});
+$('#t').bind('touchmove',function(e){
+//获取滑动屏幕时的X,Y
+	mm();
+	endX = e.originalEvent.changedTouches[0].pageX,
+	endY = e.originalEvent.changedTouches[0].pageY;
+	var positionX=endX-$('#t').offset().left; 
+	if(solo==1){
+		if ($('.player-icon').hasClass('pause')) {
+			$('.player-icon').removeClass('pause');
+		}
+		$(".player")[0].currentTime=(positionX/parseFloat($('#t').css('width')))*$('.player')[0].duration;
+		$(".player")[0].play();
+		$('.time2').css('width',positionX);
+		$('.player-icon').html(pausesvg);
+	}
+	else{
+	if(positionX<parseFloat($('#t').css('width'))&&positionX>=0){
+	id=getWhichByTime((positionX/parseFloat($('#t').css('width')))*vTime[list.length-1]);
+	if ($('.player-icon').hasClass('pause')) {
+		$('.player-icon').removeClass('pause');
+	}
+	if(id!=0){
+		$(".player")[0].src=list[id]['file'];
+		 $('.time2').css('width',positionX);
+		$(".player")[0].currentTime=(positionX/parseFloat($('#t').css('width')))*vTime[list.length-1]-vTime[id-1];
+		$(".player")[0].play();
+		$('.player-icon').html(pausesvg);
+		$('.mid').html(pausesvg);
+		if(id!=list.length)
+			$(".player")[1].src=list[id+1]['file'];
+	}
+	else{
+		$('.time2').css('width',positionX);
+		$(".player")[0].src=list[id]['file'];
+		$(".player")[0].currentTime=(positionX/parseFloat($('#t').css('width')))*vTime[list.length-1];
+		$(".player")[0].play();
+		$('.player-icon').html(pausesvg);
+		$('.mid').html(pausesvg);
+		if(id!=list.length)
+			$(".player")[1].src=list[id+1]['file'];
+	}
+	$('.control-mask').css('opacity',1);
+	$('.control').css('opacity',1);
+	}
+	}
+	if(positionX<0){
+		
+		$('.time2').css('width','0px');
+		if(solo!=1)
+		$(".player")[0].src=list[0]['file'];
+		$(".player")[0].currentTime=0;
+		$(".player")[0].play();
+		$('.player-icon').html(pausesvg);
+		$('.mid').html(pausesvg);
+		if(solo!=1)
+		if(id!=list.length)
+			$(".player")[1].src=list[id+1]['file'];
+	}
+	if(positionX>=parseFloat($('#t').css('width'))){
+		$('.time2').css('width',parseFloat($('#t').css('width')));
+		$(".player")[0].currentTime=$(".player")[0].duration;
+		$(".player")[0].pause();
+		//$(".text3").html("播放");
+		$('.player-icon').html(playsvg);
+		$('.mid').html(playsvg);
+	}
 });
 	
 }
