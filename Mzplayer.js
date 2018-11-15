@@ -162,6 +162,7 @@ function FullScreen() {
 	 else{
 		 $("video")[0].webkitEnterFullscreen();
 		 $(".text2").html("全屏");
+		 $(".mzplayer").removeClass('ff');
      }
 
 }
