@@ -63,7 +63,7 @@ function mzPlayer(){
 		
 	}
 $(container).append("<div class='mzplayer'></div>");
-$(".mzplayer").append("<div class='loading'>视频预加载ing...<br/><br/>(⊙o⊙)…<br/><br/>IE浏览器的加载较慢<br/>建议更换后观看</div>");
+$(".mzplayer").append("<div class='loading'>视频预加载ing...<br/><br/>(⊙o⊙)…<br/><br/>不推荐使用IE浏览器<br/>建议更换后观看</div>");
 $(".mzplayer").append("<div class='mzplayer-mask'></div>");	
 $(".mzplayer").append("<div class='video-wrap'></div>");
 $(".video-wrap").html(html);
@@ -71,7 +71,7 @@ $(".mzplayer").append("<div class='mid'></div>");
 $(".mzplayer").append("<div class='control-mask'></div>");
 $(".mzplayer").append("<div class='control'></div>");
 $(".mzplayer").append("<div class='r-menu'></div>");
-$(".r-menu").append('<div class="r-menu-item" ><a href="javascript:void(0);" style="text-decoration:none;">(*/ω\\*) 哼！</a></div><div class="r-menu-item"><a target="_new" href="http://wztap.top" style="text-decoration:none;">By&nbsp;&nbsp;王子饼干</a></div><div class="r-menu-item"><a href="javascript:void(0);">mzPlayer v1.0.1</a></div>');
+$(".r-menu").append('<div class="r-menu-item" ><a href="javascript:void(0);" style="text-decoration:none;">(*/ω\\*) 哼！</a></div><div class="r-menu-item"><a target="_new" href="http://wztap.top" style="text-decoration:none;">By&nbsp;&nbsp;王子饼干</a></div><div class="r-menu-item"><a href="javascript:void(0);">mzPlayer v1.1.2</a></div>');
 $(".control").append("<div class='player-icons-left'></div>");
 $(".player-icons-left").append("<div class='player-icon'></div>");
 $(".player-icons-left").append("<div class='player-volume'></div>");
@@ -142,34 +142,48 @@ function FullScreen() {
 	$(".mzplayer").addClass('ff');
 	$(".text2").html("退出");
 	if($(".mzplayer").hasClass('wf')){
+		$(".mzplayer").addClass('wff');
 		$(".mzplayer").removeClass('wf');
 		$(".text1").html("网页全屏");
 	}
-    var elem = $(".mzplayer")[0];
-    if (elem.webkitRequestFullScreen) {
-        elem.webkitRequestFullScreen();
-    } else if (elem.mozRequestFullScreen) {
-        elem.mozRequestFullScreen();
-    } else if (elem.requestFullScreen) {
-        elem.requestFullscreen();
-    } else {
-        notice.notice_show("浏览器不支持全屏API或已被禁用", null, null, null, true, true);
-    }
+    var ele = $(".mzplayer")[0];
+     if (ele.requestFullscreen) {
+		 ele.requestFullscreen();
+     }
+     else if (ele.msRequestFullscreen) {
+     	ele.msRequestFullscreen();
+     }
+     else if (ele.mozRequestFullScreen) {
+     	ele.mozRequestFullScreen();
+     }
+     else if (ele.webkitRequestFullScreen) {
+     	ele.webkitRequestFullScreen();
+     }
+	 else{
+		 $("video")[0].webkitEnterFullscreen();
+		 $(".text2").html("全屏");
+     }
+
 }
 
 //PC退出全屏函数
 function exitFullscreen() {
 	$(".mzplayer").removeClass('ff');
 	$(".text2").html("全屏");
-     var elem = document;
-    if (elem.webkitCancelFullScreen) {
-        elem.webkitCancelFullScreen();
-    } else if (elem.mozCancelFullScreen) {
-        elem.mozCancelFullScreen();
-    } else if (elem.cancelFullScreen) {
-        elem.cancelFullScreen();
-    } else if (elem.exitFullscreen) {
-        elem.exitFullscreen();
+	if($(".mzplayer").hasClass('wff')){
+		$(".mzplayer").addClass('wf');
+		$(".mzplayer").removeClass('wff');
+		$(".text1").html("还原网页");
+	}
+    var ele = document;
+    if (ele.webkitCancelFullScreen) {
+        ele.webkitCancelFullScreen();
+    } else if (ele.mozCancelFullScreen) {
+        ele.mozCancelFullScreen();
+    } else if (ele.cancelFullScreen) {
+        ele.cancelFullScreen();
+    } else if (ele.exitFullscreen) {
+        ele.exitFullscreen();
     } else {
         notice.notice_show("浏览器不支持全屏API或已被禁用", null, null, null, true, true);
     }
@@ -192,7 +206,7 @@ function makeReady(){
 	$('.player-icon').html(playsvg);
 	$('.mid').html(playsvg);
 	$('.p1').css('opacity',1); 
-	console.log('\n' + ' %c mzPlayer v1.0.1'+' %c http://wztap.top ' + '\n' + '\n', 'color: #fadfa3; background: #198ce4; padding:5px 0;', 'background: #fadfa3; padding:5px 0;');
+	console.log('\n' + ' %c mzPlayer v1.1.2'+' %c http://wztap.top ' + '\n' + '\n', 'color: #fadfa3; background: #198ce4; padding:5px 0;', 'background: #fadfa3; padding:5px 0;');
 	//for(i=0;i<=$(".player").length-1;i++)
 	//$(".player")[i].volume=1;	
 	if(dansrc=='')
@@ -342,7 +356,7 @@ function whenPlay(){
 }
 }
 	if($(".player")[0].paused==false)
-	var t=setTimeout("whenPlay()",200);
+	var t=setTimeout("whenPlay()",50);
 }//播放时的获取实时信息函数
 
 
@@ -539,8 +553,13 @@ $(document).keydown(function(e){
 document.addEventListener("fullscreenchange", function(e) {
 	fullBJ++;
   if(fullBJ%2==0){
-  	$(".mzplayer").removeClass('ff');
+	$(".mzplayer").removeClass('ff');
 	$(".text2").html("全屏");
+	if($(".mzplayer").hasClass('wff')){
+		$(".mzplayer").addClass('wf');
+		$(".mzplayer").removeClass('wff');
+		$(".text1").html("还原网页");
+	}
   }
 });
 document.addEventListener("mozfullscreenchange", function(e) {
@@ -548,6 +567,11 @@ document.addEventListener("mozfullscreenchange", function(e) {
   if(fullBJ%2==0){
   	$(".mzplayer").removeClass('ff');
 	$(".text2").html("全屏");
+	if($(".mzplayer").hasClass('wff')){
+		$(".mzplayer").addClass('wf');
+		$(".mzplayer").removeClass('wff');
+		$(".text1").html("还原网页");
+	}
   }
 });
 document.addEventListener("webkitfullscreenchange", function(e) {
@@ -555,6 +579,11 @@ document.addEventListener("webkitfullscreenchange", function(e) {
   if(fullBJ%2==0){
   	$(".mzplayer").removeClass('ff');
 	$(".text2").html("全屏");
+	if($(".mzplayer").hasClass('wff')){
+		$(".mzplayer").addClass('wf');
+		$(".mzplayer").removeClass('wff');
+		$(".text1").html("还原网页");
+	}
   }
 });
 document.addEventListener("msfullscreenchange", function(e) {
@@ -562,6 +591,11 @@ document.addEventListener("msfullscreenchange", function(e) {
   if(fullBJ%2==0){
   	$(".mzplayer").removeClass('ff');
 	$(".text2").html("全屏");
+	if($(".mzplayer").hasClass('wff')){
+		$(".mzplayer").addClass('wf');
+		$(".mzplayer").removeClass('wff');
+		$(".text1").html("还原网页");
+	}
   }
 });
 
@@ -978,5 +1012,18 @@ $('#t').bind('touchmove',function(e){
 		$('.mid').html(playsvg);
 	}
 });
+if(isMobile){
+$('.video-wrap').bind('touchstart',function(e){
+	startX = e.originalEvent.changedTouches[0].pageX;
+	startY = e.originalEvent.changedTouches[0].pageY;
+});
+$('.video-wrap').bind('touchmove',function(e){
+	mm();
+		
+});
+$('.control-mask').bind('touchmove',function(e){
+	mm();
 	
+});
+}
 }
