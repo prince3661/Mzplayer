@@ -225,8 +225,15 @@ function makeReady(){
 	allStop();
 	$(".player")[0].style.display='block';
 	$('.loading').css('display','none');
-	if(store.get('vol'))
+	if(store.get('vol')){
 		$(".player")[0].volume=store.get('vol');
+		if($(".player")[0].volume>0.66)
+			$(".player-volume-icon").html(volumeupsvg);
+		if($(".player")[0].volume<0.65&&$(".player")[0].volume!=0)
+			$(".player-volume-icon").html(volumedownsvg);	
+		if($(".player")[0].volume==0)
+			$(".player-volume-icon").html(volumeoffsvg);
+	}
 
 	whenPlay();
 	
@@ -372,6 +379,8 @@ var mouseplayer=0;
 var mouseplayer1=0;
 var fullBJ=0;
 
+
+	
 $('.setting-icon').click(function(){
 	$(".setting-box").addClass('box-open');
 	$(".mzplayer-mask").css("display",'block');
