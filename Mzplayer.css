@@ -97,18 +97,25 @@ path{
 	font-size: 13px;
 	cursor: default;
 	width: 82px;
-	transition: all .5s ease;
-	left:150px;
+	transition: all .3s linear;
+	left:87px;
 	top:10px;
 }
 .player-volume{
 	display:inline-block;
 	position:absolute;
 	cursor:pointer;	
+	left:40px;
+	height: 40px;
+}
+.player-volume-icon{
+	display:inline-block;
+	position:absolute;
+	cursor:pointer;	
 	width:26px;
 	height:24px;
 	padding: 7px;
-	left:45px;
+	left:0px;
 }
 .wf{
 	left: 0;
@@ -141,18 +148,20 @@ path{
 }
 .voice{
 	width:50px;
-	transition: max-width 0.45; 
 }
 .voice2{
 	/*width:100%;*/
 	max-width:50px;
 }
 #vol{
+	max-width: 0px;
 	cursor: pointer;
 	display:inline-block;
 	position:absolute;
 	top:14px;
-	left:85px;
+	left:40px;
+	transition: all .3s linear;
+	overflow:hidden;
 }
 .player-notice{
 	font-size: 14px;
@@ -179,10 +188,10 @@ path{
 	top:-4px;
 	opacity:0;
 }
-p1,p2{
-	opacity:0;
-	transition:opacity 0.5s;
+.p1{
+	transition:all 0.15s;
 }
+
 #t{
 	 width:calc(100% - 40px); 
 	 display:block;

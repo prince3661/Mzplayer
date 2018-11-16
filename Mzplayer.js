@@ -75,8 +75,9 @@ $(".r-menu").append('<div class="r-menu-item" ><a href="javascript:void(0);" sty
 $(".control").append("<div class='player-icons-left'></div>");
 $(".player-icons-left").append("<div class='player-icon'></div>");
 $(".player-icons-left").append("<div class='player-volume'></div>");
-$(".player-volume").append(volumeupsvg);
-$(".player-icons-left").append('<div id="vol"></div>');
+$(".player-volume").append("<div class='player-volume-icon'></div>");	
+$(".player-volume-icon").append(volumeupsvg);
+$(".player-volume").append('<div id="vol"></div>');
 $("#vol").append("<div class='controller voice'></div>");
 $(".voice").append("<div class='controller2 voice2'></div>");
 $(".voice2").append("<div class='point p1'></div>");
@@ -206,7 +207,7 @@ function makeReady(){
 	}
 	$('.player-icon').html(playsvg);
 	$('.mid').html(playsvg);
-	$('.p1').css('opacity',1); 
+	//$('.p1').css('opacity',1); 
 	console.log('\n' + ' %c mzPlayer v1.1.2'+' %c http://wztap.top ' + '\n' + '\n', 'color: #fadfa3; background: #198ce4; padding:5px 0;', 'background: #fadfa3; padding:5px 0;');
 	//for(i=0;i<=$(".player").length-1;i++)
 	//$(".player")[i].volume=1;	
@@ -602,7 +603,9 @@ document.addEventListener("msfullscreenchange", function(e) {
 
 //大小改变事件
 $(".mzplayer").resize(function(){ 
-
+	if(solo==1&&$('.player')[0].buffered.length){
+		$('.controller3').css('width',($('.player')[0].buffered.end($('.player')[0].buffered.length-1))/($(".player")[0].duration)*parseFloat($('#t').css('width')));
+	}
 });
 var dcTime=(new Date()).getTime();
 //暂停or播放点击事件绑定
@@ -756,7 +759,24 @@ $("#t").mouseover(function (e){
     $('.p2').css('opacity',0);
 	$('.bar-time').css('opacity',0);   
 });
-
+var imin=0;
+$(".player-volume").mouseover(function (e){
+	imin=1;
+	$('.p1').css('opacity',1);
+	$('#vol').css('max-width','50px');
+	$('.player-time').css('left','140px');
+	$('#vol').css('overflow','visible');
+	$(".player-volume").css('width','100px');
+}).mouseout(function (){
+	imin=0;
+	if(mouseplayer==0){
+	$('.p1').css('opacity',0);
+	$('#vol').css('max-width','0px');
+	$('.player-time').css('left','87px');
+	$('#vol').css('overflow','hidden'); 
+	$(".player-volume").css('width','0px');
+	}
+});
 //声音控制条及其他信息提示
 $('#vol').mousedown(function(e){
 	mouseplayer=1;
@@ -764,6 +784,13 @@ $('#vol').mousedown(function(e){
 $(document).mouseup(function(){
 	mouseplayer=0;
 	mouseplayer1=0;
+	if(imin==0){
+	$('.p1').css('opacity',0);
+	$('#vol').css('max-width','0px');
+	$('.player-time').css('left','87px');
+	$('#vol').css('overflow','hidden');
+	$(".player-volume").css('width','0px');
+	}
 	setTimeout("$('.player-notice').css('opacity',0)",3000);
 });
 $('#vol').click(function(e){
@@ -781,7 +808,7 @@ $('#vol').click(function(e){
 	}
 	voi();
 });
-$('.player-volume').click(function(){
+$('.player-volume-icon').click(function(){
 	if ($(this).hasClass('mute')) {
 		$(".player")[0].muted=false;
 		$(this).removeClass('mute');
@@ -793,18 +820,18 @@ $('.player-volume').click(function(){
 		$('.voice2').css('width',0);
 		voi();
 		$(".player-notice").html('&nbsp;音量 0%');
-		$(".player-volume").html(volumeoffsvg);	
+		$(".player-volume-icon").html(volumeoffsvg);	
 	}
 });
 function voi(){
 	$(".player-notice").css('opacity',0.85);
 	$(".player-notice").html('&nbsp;音量 '+parseInt($(".player")[0].volume*100)+'%');
 	if($(".player")[0].volume>0.66)
-	$(".player-volume").html(volumeupsvg);
+	$(".player-volume-icon").html(volumeupsvg);
 	if($(".player")[0].volume<0.65&&$(".player")[0].volume!=0)
-	$(".player-volume").html(volumedownsvg);	
+	$(".player-volume-icon").html(volumedownsvg);	
 	if($(".player")[0].volume==0)
-	$(".player-volume").html(volumeoffsvg);	
+	$(".player-volume-icon").html(volumeoffsvg);	
 }
 //两个滚动条的控制 
 $(document).mousemove(function(e){
