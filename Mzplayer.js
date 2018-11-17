@@ -64,6 +64,8 @@ function mzPlayer(){
 	}
 $(container).append("<div class='mzplayer'></div>");
 $(".mzplayer").append("<div class='loading'>视频预加载ing...<br/><br/>(⊙o⊙)…<br/><br/>不推荐使用IE浏览器<br/>建议更换后观看</div>");
+if(isMobile)
+$('.loading').css('display','none');	
 $(".mzplayer").append("<div class='mzplayer-mask'></div>");	
 $(".mzplayer").append("<div class='video-wrap'></div>");
 $(".video-wrap").html(html);
@@ -115,7 +117,7 @@ $(".control").append("<div class='text5'></div>");
 $(".text5").html("设置");
 $(".control").append("<div class='text6'></div>");
 $(".text6").html("发送弹幕");
-	
+
 //程序的开始
 try {
     makeReady();    //保证函数的正常运行
