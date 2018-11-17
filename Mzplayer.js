@@ -216,8 +216,7 @@ function makeReady(){
 	if(isMobile){
 		$('.player-volume').css('display','none');
 		$('#vol').css('display','none');
-		$('.player-time').css('left','50px');
-		
+		$('.player-time').css('left','50px');		
 		$('.control').addClass('mcontrol');
 	}
 	$(".player-time").html('00:00&nbsp;/&nbsp;00:00');
@@ -793,12 +792,14 @@ $('#vol').mousedown(function(e){
 $(document).mouseup(function(){
 	mouseplayer=0;
 	mouseplayer1=0;
+	if(!isMobile){
 	if(imin==0){
 	$('.p1').css('opacity',0);
 	$('#vol').css('max-width','0px');
 	$('.player-time').css('left','87px');
 	$('#vol').css('overflow','hidden');
 	$(".player-volume").css('width','0px');
+	}
 	}
 	setTimeout("$('.player-notice').css('opacity',0)",3000);
 });
